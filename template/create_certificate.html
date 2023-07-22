@@ -1,0 +1,95 @@
+<!-- create_certificate.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Certificate</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    </head>
+    <body>
+        <h1>Create a New Certificate</h1>
+        <form method="post" id="certificate-form">
+            {% csrf_token %}
+            <label for="title">Certificate Title:</label>
+            <input type="text" name="title" id="title" required>
+            <br>
+            <label for="content">Certificate Content:</label>
+            <textarea name="content" id="content" rows="4" cols="50" required></textarea>
+            <br>
+            <button type="submit">Create Certificate</button>
+        </form>
+    
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#certificate-form').on('submit', function(event) {
+                    event.preventDefault();
+                    const formData = {
+                        'title': $('#title').val(),
+                        'content': $('#content').val(),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',  // Django template tag for CSRF token
+                    };
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "create_certificate" %}',  // Django template tag for URL
+                        data: formData,
+                        success: function(data) {
+                            // Handle the success response here, if needed
+                            alert('Certificate created with ID: ' + data.certificate_id);
+                            // Redirect the user to the certificate details page
+                            window.location.href = '/certificate_details/' + data.certificate_id + '/';
+                        },
+                        error: function(error) {
+                            // Handle the error response here, if needed
+                            alert('Error creating certificate: ' + error.responseText);
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+    </html>

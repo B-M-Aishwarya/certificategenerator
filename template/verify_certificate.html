@@ -1,0 +1,111 @@
+<!-- verify_certificate.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify Certificate</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .verification-result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .verification-result.true {
+            color: green;
+        }
+
+        .verification-result.false {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Verify Certificate</h1>
+    <h1>certify to {{certificate.id}}</h1>
+    <form method="post" id="verification-form">
+        {% csrf_token %}
+        <label for="token">Verification Token:</label>
+        <input type="text" name="token" id="token" required>
+        <br>
+        <button type="submit">Verify</button>
+    </form>
+
+    <div class="verification-result" id="verification-result">
+        <!-- The verification result will be displayed here -->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#verification-form').on('submit', function(event) {
+                event.preventDefault();
+                const formData = {
+                    'token': $('#token').val(),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',  // Django template tag for CSRF token
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "verify_certificate" %}',  // Django template tag for URL
+                    data: formData,
+                    success: function(data) {
+                        // Handle the success response here
+                        const resultDiv = $('#verification-result');
+                        if (data.valid) {
+                            resultDiv.text('Certificate is valid. Certificate ID: ' + data.certificate_id).addClass('true').removeClass('false');
+                        } else {
+                            resultDiv.text('Invalid verification token.').addClass('false').removeClass('true');
+                        }
+                    },
+                    error: function(error) {
+                        // Handle the error response here, if needed
+                        alert('Error verifying certificate: ' + error.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

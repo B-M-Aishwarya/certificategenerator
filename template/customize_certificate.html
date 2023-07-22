@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customize Certificate</title>
+</head>
+<body>
+    <h1>Customize Certificate</h1>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="new_content" rows="10" cols="50">{{ certificate.content }}</textarea>
+        <br>
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>
