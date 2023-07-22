@@ -71,20 +71,18 @@
                     const formData = {
                         'title': $('#title').val(),
                         'content': $('#content').val(),
-                        'csrfmiddlewaretoken': '{{ csrf_token }}',  // Django template tag for CSRF token
+                        'csrfmiddlewaretoken': '{{ csrf_token }}', 
                     };
                     $.ajax({
                         type: 'POST',
-                        url: '{% url "create_certificate" %}',  // Django template tag for URL
+                        url: '{% url "create_certificate" %}',  
                         data: formData,
                         success: function(data) {
-                            // Handle the success response here, if needed
+                            
                             alert('Certificate created with ID: ' + data.certificate_id);
-                            // Redirect the user to the certificate details page
                             window.location.href = '/certificate_details/' + data.certificate_id + '/';
                         },
                         error: function(error) {
-                            // Handle the error response here, if needed
                             alert('Error creating certificate: ' + error.responseText);
                         }
                     });

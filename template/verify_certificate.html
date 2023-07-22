@@ -74,7 +74,6 @@
     </form>
 
     <div class="verification-result" id="verification-result">
-        <!-- The verification result will be displayed here -->
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -84,14 +83,13 @@
                 event.preventDefault();
                 const formData = {
                     'token': $('#token').val(),
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',  // Django template tag for CSRF token
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',  
                 };
                 $.ajax({
                     type: 'POST',
-                    url: '{% url "verify_certificate" %}',  // Django template tag for URL
+                    url: '{% url "verify_certificate" %}', 
                     data: formData,
                     success: function(data) {
-                        // Handle the success response here
                         const resultDiv = $('#verification-result');
                         if (data.valid) {
                             resultDiv.text('Certificate is valid. Certificate ID: ' + data.certificate_id).addClass('true').removeClass('false');
@@ -100,7 +98,6 @@
                         }
                     },
                     error: function(error) {
-                        // Handle the error response here, if needed
                         alert('Error verifying certificate: ' + error.responseText);
                     }
                 });
